@@ -2,7 +2,7 @@ package ru.fastdelivery.domain.common.weight;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
+
 
 /**
  * Общий класс веса
@@ -27,7 +27,7 @@ public record Weight(BigInteger weightGrams) implements Comparable<Weight> {
 
     public BigDecimal kilograms() {
         return new BigDecimal(weightGrams)
-                .divide(BigDecimal.valueOf(1000), 100, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(1000), 100, BigDecimal.ROUND_UP);
     }
 
     public Weight add(Weight additionalWeight) {

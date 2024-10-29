@@ -4,6 +4,7 @@ currency:
 cost:
   rub:
     perKg: 400
+    perCubicMeter: 300
     minimal: 350
 dimensions:
   upperLimit: 1500

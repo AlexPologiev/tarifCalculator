@@ -5,6 +5,7 @@ import java.math.BigInteger;
 public interface CheckDimensions {
 
     long UPPER_LIMIT = 1500;
+    BigInteger NORMALIZE_VALUE = BigInteger.valueOf(50);
     default boolean isLessThanZero(BigInteger dimension) {
         return BigInteger.ZERO.compareTo(dimension) > 0;
     }

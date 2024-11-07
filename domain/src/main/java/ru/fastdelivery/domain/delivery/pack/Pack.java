@@ -1,5 +1,6 @@
 package ru.fastdelivery.domain.delivery.pack;
 
+import com.javadocmd.simplelatlng.LatLng;
 import ru.fastdelivery.domain.common.volume.Volume;
 import ru.fastdelivery.domain.common.weight.Weight;
 

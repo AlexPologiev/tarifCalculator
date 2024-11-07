@@ -1,5 +1,6 @@
 package ru.fastdelivery.presentation.calc;
 
+import com.javadocmd.simplelatlng.LatLng;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.fastdelivery.domain.common.currency.Currency;
 import ru.fastdelivery.domain.common.currency.CurrencyFactory;
 import ru.fastdelivery.domain.common.dimension.Height;
 import ru.fastdelivery.domain.common.dimension.Length;
@@ -20,6 +22,7 @@ import ru.fastdelivery.domain.common.dimension.Width;
 import ru.fastdelivery.domain.delivery.pack.Pack;
 import ru.fastdelivery.domain.delivery.shipment.Shipment;
 import ru.fastdelivery.presentation.api.request.CalculatePackagesRequest;
+import ru.fastdelivery.presentation.api.request.Point;
 import ru.fastdelivery.presentation.api.response.CalculatePackagesResponse;
 import ru.fastdelivery.usecase.TariffCalculateUseCase;
 
@@ -40,23 +43,36 @@ public class CalculateController {
     })
     public CalculatePackagesResponse calculate(
             @Valid @RequestBody CalculatePackagesRequest request) {
-        log.info("request = " + request.packages().get(0));
-        var packsWeights = request.packages().stream()
-                .map((p) -> {
-                   Volume vol = new Volume(
-                            new Length(p.length()),
-                            new Width(p.width()),
-                            new Height(p.height()));
+        log.info("request = " + request);
 
-                    Weight weight = new Weight(p.weight());
-               return new Pack(weight,vol);
-                })
-                .toList();
-
-        var shipment = new Shipment(packsWeights, currencyFactory.create(request.currencyCode()));
+        var shipment = convertRequestToShipment(request);
         var calculatedPrice = tariffCalculateUseCase.calc(shipment);
         var minimalPrice = tariffCalculateUseCase.minimalPrice();
         return new CalculatePackagesResponse(calculatedPrice, minimalPrice);
+    }
+
+    private Shipment convertRequestToShipment(CalculatePackagesRequest request){
+        var packsWeights = request.packages().stream()
+                .map((p) -> {
+                    Volume vol = new Volume(
+                            new Length(p.length()),
+                            new Width(p.width()),
+                            new Height(p.height()));
+                    Weight weight = new Weight(p.weight());
+                    return new Pack(weight,vol);
+                })
+                .toList();
+
+        LatLng destinationPoint = new LatLng(
+                request.destination().latitude(),
+                request.destination().longitude());
+        LatLng departurePoint = new LatLng(
+                request.departure().latitude(),
+                request.departure().longitude());
+
+        Currency currency = currencyFactory.create(request.currencyCode());
+
+        return new Shipment(packsWeights, currency, destinationPoint, departurePoint);
     }
 }
 

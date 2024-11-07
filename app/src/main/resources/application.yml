@@ -5,6 +5,7 @@ cost:
   rub:
     perKg: 400
     perCubicMeter: 300
+    perKilometer: 20
     minimal: 350
 dimensions:
   upperLimit: 1500

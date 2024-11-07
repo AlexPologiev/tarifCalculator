@@ -11,23 +11,29 @@ import javax.inject.Named;
 public class TariffCalculateUseCase {
     private final WeightPriceProvider weightPriceProvider;
     private final VolumePriceProvider volumePriceProvider;
+    private final DistancePriceProvider distancePriceProvider;
 
     public Price calc(Shipment shipment) {
         var weightAllPackagesKg = shipment.weightAllPackages().kilograms();
         var volumeAllPackages = shipment.volumeAllPackages();
         var minimalPrice = weightPriceProvider.minimalPrice();
-
+        var distance = shipment.distanceShipment();
         var costByWeight = weightPriceProvider
                 .costPerKg()
                 .multiply(weightAllPackagesKg);
-
 
         var costByVolume = volumePriceProvider
                 .costPerCubicMeter()
                 .multiply(volumeAllPackages.calculateVolume());
 
-                return costByVolume
-                         .max(costByWeight.max(minimalPrice));
+        var costByDistance = distancePriceProvider
+                .costPerKilometer()
+                .multiply(distance);
+
+        return costByVolume
+                .max(costByWeight.
+                        max(minimalPrice.
+                                max(costByDistance)));
     }
 
     public Price minimalPrice() {

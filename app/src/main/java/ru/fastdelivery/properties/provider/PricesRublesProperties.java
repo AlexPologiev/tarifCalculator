@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import ru.fastdelivery.domain.common.currency.CurrencyFactory;
 import ru.fastdelivery.domain.common.price.Price;
+import ru.fastdelivery.usecase.DistancePriceProvider;
 import ru.fastdelivery.usecase.VolumePriceProvider;
 import ru.fastdelivery.usecase.WeightPriceProvider;
 
@@ -15,12 +16,12 @@ import java.math.BigDecimal;
  */
 @ConfigurationProperties("cost.rub")
 @Setter
-public class PricesRublesProperties implements WeightPriceProvider, VolumePriceProvider {
+public class PricesRublesProperties implements WeightPriceProvider, VolumePriceProvider, DistancePriceProvider {
 
     private BigDecimal perKg;
     private BigDecimal minimal;
-
     private BigDecimal perCubicMeter;
+    private BigDecimal perKilometer;
 
     @Autowired
     private CurrencyFactory currencyFactory;
@@ -38,5 +39,10 @@ public class PricesRublesProperties implements WeightPriceProvider, VolumePriceP
     @Override
     public Price costPerCubicMeter() {
         return new Price(perCubicMeter, currencyFactory.create("RUB"));
+    }
+
+    @Override
+    public Price costPerKilometer() {
+        return new Price(perKilometer, currencyFactory.create("RUB"));
     }
 }

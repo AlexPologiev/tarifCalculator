@@ -8,7 +8,7 @@ import java.math.BigInteger;
 
 @Data
 public class Dimension implements CheckDimensions {
-    public final BigInteger dimension;
+    private final BigInteger dimension;
 
     public Dimension(BigInteger dimension) {
         if (isLessThanZero(dimension)) {

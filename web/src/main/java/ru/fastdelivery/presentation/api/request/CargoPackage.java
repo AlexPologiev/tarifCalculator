@@ -1,7 +1,9 @@
 package ru.fastdelivery.presentation.api.request;
 
+import com.javadocmd.simplelatlng.LatLng;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.awt.*;
 import java.math.BigInteger;
 
 public record CargoPackage(
@@ -16,5 +18,9 @@ public record CargoPackage(
 
         @Schema(description = "Высота упаковки, мм", example = "1200")
         BigInteger height
+
+
+
+
 ) {
 }
